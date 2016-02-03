@@ -6,6 +6,7 @@ import com.github.jpmoresmau.rabbitplatform.framework.ImageFormat;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 
 /**
  * http://www.kilobolt.com/day-6-the-android-game-framework-part-ii.html
@@ -108,8 +110,6 @@ public class AndroidGraphics implements Graphics {
     @Override
     public void drawString(String text, int x, int y, Paint paint){
         canvas.drawText(text, x, y, paint);
-
-
     }
 
 
@@ -163,5 +163,9 @@ public class AndroidGraphics implements Graphics {
     @Override
     public int getHeight() {
         return frameBuffer.getHeight();
+    }
+
+    public Typeface loadTypeface(String path){
+        return Typeface.createFromAsset(assets,path);
     }
 }

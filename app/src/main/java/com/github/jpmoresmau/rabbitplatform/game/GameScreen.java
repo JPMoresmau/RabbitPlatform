@@ -1,5 +1,8 @@
 package com.github.jpmoresmau.rabbitplatform.game;
 
+import android.graphics.Color;
+import android.graphics.Paint;
+
 import com.github.jpmoresmau.rabbitplatform.framework.Game;
 import com.github.jpmoresmau.rabbitplatform.framework.Graphics;
 import com.github.jpmoresmau.rabbitplatform.framework.GraphicsUtils;
@@ -10,6 +13,7 @@ import com.github.jpmoresmau.rabbitplatform.framework.TouchEventType;
 import com.github.jpmoresmau.rabbitplatform.game.model.Ground;
 import com.github.jpmoresmau.rabbitplatform.game.model.GroundComponent;
 import com.github.jpmoresmau.rabbitplatform.game.model.Player;
+import com.github.jpmoresmau.rabbitplatform.game.model.Score;
 
 import java.util.List;
 
@@ -19,6 +23,7 @@ import java.util.List;
 public class GameScreen extends Screen {
     private Player player;
     private Ground ground;
+    private Score score;
 
     private int minX=5;
     private int maxY=0;
@@ -27,12 +32,19 @@ public class GameScreen extends Screen {
 
     private boolean over=false;
 
+    private Paint p=new Paint();
+
+
     public GameScreen(Game game) {
 
         super(game);
         Graphics g = getGame().getGraphics();
         maxY=g.getHeight()-RAssets.ground_grass.getHeight();
         init();
+
+        p.setColor(Color.WHITE);
+        p.setTypeface(RAssets.block_font);
+        p.setTextSize(40);
     }
 
     private void init(){
@@ -41,6 +53,8 @@ public class GameScreen extends Screen {
         int x=minX+RAssets.ground_grass.getWidth()/2;
 
         player=new Player(x,maxY);
+
+        score=new Score();
     }
 
     @Override
@@ -64,9 +78,11 @@ public class GameScreen extends Screen {
             }
         }
         if (!paused) {
+            score.update(deltaTime);
             ground.update(deltaTime);
-            player.update(deltaTime, ground.getRealMaxY(player.getX()));
-            if (player.getY()>=getGame().getGraphics().getHeight()){
+            int maxY=ground.getRealMaxY(player.getX());
+            player.update(deltaTime, maxY);
+            if (!player.isJumping() && (player.getY()>maxY || player.getY()>=getGame().getGraphics().getHeight())){
                 // game over!!
                 over=true;
                 paused=true;
@@ -87,6 +103,9 @@ public class GameScreen extends Screen {
 
         Image ctrl=paused?RAssets.forward:RAssets.pause;
         g.drawImage(ctrl,5,5);
+
+        g.drawString(score.getFormattedScore(),g.getWidth()-150,40,p);
+
 
         for (GroundComponent gc:ground.getComponents()){
             if (gc.getImage()!=null) {

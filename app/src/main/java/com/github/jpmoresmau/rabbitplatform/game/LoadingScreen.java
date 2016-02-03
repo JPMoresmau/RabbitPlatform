@@ -1,11 +1,14 @@
 package com.github.jpmoresmau.rabbitplatform.game;
 
+import android.graphics.Typeface;
+
 import com.github.jpmoresmau.rabbitplatform.framework.Game;
 import com.github.jpmoresmau.rabbitplatform.framework.Graphics;
 import com.github.jpmoresmau.rabbitplatform.framework.GraphicsUtils;
 import com.github.jpmoresmau.rabbitplatform.framework.Image;
 import com.github.jpmoresmau.rabbitplatform.framework.ImageFormat;
 import com.github.jpmoresmau.rabbitplatform.framework.Screen;
+import com.github.jpmoresmau.rabbitplatform.framework.android.AndroidGraphics;
 
 import java.lang.reflect.Field;
 
@@ -36,6 +39,8 @@ public class LoadingScreen extends Screen {
         } catch (Exception e){
             throw new RuntimeException(e);
         }
+
+        RAssets.block_font= g.loadTypeface("fonts/kenpixel_blocks.ttf");
 
         getGame().setScreen(new GameScreen(getGame()));
 

@@ -15,6 +15,16 @@ public class Player {
     private float vy;
 
     private boolean jump;
+    private long jumpStart;
+
+    private float rate=20;
+
+    private float highRate =20;
+    private long lowDelay=100;
+    private float lowRate=10;
+    private long middleDelay=300;
+    private float middleRate=15;
+    private float jumpVelocity=-5.0f;
 
     public Player(int x,int y){
         this.x=x;
@@ -29,25 +39,13 @@ public class Player {
         return y;
     }
 
-    private Long lastLong=null;
-    private boolean longJump(){
-        if (jump){
-            if (lastLong==null){
-                lastLong=System.currentTimeMillis();
-                return true;
-            } else {
-                return System.currentTimeMillis()-lastLong<200;
-            }
-        } else {
-            lastLong=null;
-        }
-
-        return false;
-    }
 
     private void gravity(float deltaTime,int maxY){
         if (y<maxY){
-            vy += deltaTime/16;
+            vy += deltaTime/rate;
+            if (vy<0.1 && vy>-0.1){
+                Log.d("Player","vy"+vy+",y:"+y+",rate:"+rate);
+            }
         } else {
             if (vy>0){
                 stopJump();
@@ -58,18 +56,29 @@ public class Player {
 
     public void addJump(){
         jump=true;
-        lastLong=null;
+        rate= highRate;
+        jumpStart=System.currentTimeMillis();
+        Log.d("Player","addJump");
     };
 
     public void stopJump(){
-        jump=false;
-        lastLong=null;
+        long diff=System.currentTimeMillis()-jumpStart;
+        if (diff<lowDelay){
+            rate=lowRate;
+        } else if (diff<middleDelay){
+            rate=middleRate;
+        }
+        jumpStart=0;
+        Log.d("Player","stopJump:"+diff+"->rate:"+rate);
     }
 
     private void jump(){
         if (vy==0 && jump){
-            vy=-6.0f;
+            Log.d("Player","jump");
+            vy=jumpVelocity;
+            jump=false;
         }
+
     }
 
     private void physics(float deltaTime,int maxY){
@@ -94,5 +103,9 @@ public class Player {
         } else {
             return RAssets.bunny1_ready;
         }
+    }
+
+    public boolean isJumping(){
+        return vy<0;
     }
 }

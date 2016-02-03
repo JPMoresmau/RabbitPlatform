@@ -1,5 +1,7 @@
 package com.github.jpmoresmau.rabbitplatform.game;
 
+import android.graphics.Typeface;
+
 import com.github.jpmoresmau.rabbitplatform.framework.Image;
 
 /**
@@ -20,4 +22,6 @@ public class RAssets {
 
     public static int GREEN = 0x2C774C;
     public static int SKY = 0xade6ff;
+
+    public static Typeface block_font;
 }
