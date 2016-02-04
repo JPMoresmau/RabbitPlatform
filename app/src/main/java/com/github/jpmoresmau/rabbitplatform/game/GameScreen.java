@@ -2,6 +2,7 @@ package com.github.jpmoresmau.rabbitplatform.game;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import com.github.jpmoresmau.rabbitplatform.R;
 import com.github.jpmoresmau.rabbitplatform.framework.Game;
@@ -33,6 +34,7 @@ public class GameScreen extends Screen {
 
     private boolean paused=false;
     private boolean scored=false;
+    private boolean highscored=false;
 
 
     public GameScreen(Game game) {
@@ -46,6 +48,7 @@ public class GameScreen extends Screen {
 
     private void init(){
         scored=false;
+        highscored=false;
         speed=new Speed();
         Graphics g = getGame().getGraphics();
         ground=new Ground(g.getWidth(),maxY);
@@ -53,7 +56,7 @@ public class GameScreen extends Screen {
 
         player=new Player(x,maxY);
 
-        score=new Score();
+        score=new Score(getGame());
     }
 
     @Override
@@ -99,6 +102,7 @@ public class GameScreen extends Screen {
 //                Log.d("GameScreen","over:player.getY()>=getGame().getGraphics().getHeight():"+(player.getY()>=getGame().getGraphics().getHeight()));
                 // game over!!
                 player.die();
+                highscored=score.gameOver();
                 paused=true;
             }
         } else if (player.isDead()){
@@ -140,8 +144,11 @@ public class GameScreen extends Screen {
         g.drawImage(img, player.getX()-img.getWidth()/2, player.getY()-img.getHeight());
 
         if (player.isDead()){
+            Rect r=GraphicsUtils.drawCenter(g, getGame().getResourceString(R.string.game_over),RAssets.messagePaint);
             //GraphicsUtils.drawCenter(g,RAssets.gameover);
-            GraphicsUtils.drawCenter(g, getGame().getResourceString(R.string.game_over),RAssets.messagePaint);
+            if (highscored){
+                GraphicsUtils.drawCenter(g, getGame().getResourceString(R.string.best_scored),RAssets.messagePaint,0,r.height()+10);
+            }
         } else if (paused){
             //GraphicsUtils.drawCenter(g,RAssets.paused);
             GraphicsUtils.drawCenter(g,getGame().getResourceString(R.string.paused),RAssets.messagePaint);
@@ -151,6 +158,8 @@ public class GameScreen extends Screen {
             g.drawString(getGame().getResourceString(R.string.written),x, 100,RAssets.aboutPaint);
             g.drawString(getGame().getResourceString(R.string.framework),x, 150,RAssets.aboutPaint);
             g.drawString(getGame().getResourceString(R.string.art),x, 200,RAssets.aboutPaint);
+            String s=String.format(getGame().getResourceString(R.string.best), score.getHighScore());
+            g.drawString(s,x, 250,RAssets.aboutPaint);
         }
     }
 

@@ -6,6 +6,6 @@
     <string name="written">Written by JP Moresmau</string>
     <string name="framework">Framework by http://www.kilobolt.com/</string>
     <string name="art">Art by http://kenney.nl/</string>
-    <string name="best">Personal best: %0d</string>
-
+    <string name="best">Personal best: %04d</string>
+    <string name="best_scored">Personal best!</string>
 </resources>

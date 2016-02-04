@@ -1,7 +1,5 @@
 package com.github.jpmoresmau.rabbitplatform.game.model;
 
-import android.util.Log;
-
 /**
  * Created by jpmoresmau on 2/4/16.
  */
@@ -16,7 +14,7 @@ public class Speed {
         counter += deltaTime;
         if (counter > inc) {
             counter -= inc;
-            Log.d("Speed", "Increase:" + increase);
+            //Log.d("Speed", "Increase:" + increase);
             return increase;
 
         }

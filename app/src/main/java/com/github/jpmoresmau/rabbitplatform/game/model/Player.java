@@ -1,7 +1,5 @@
 package com.github.jpmoresmau.rabbitplatform.game.model;
 
-import android.util.Log;
-
 import com.github.jpmoresmau.rabbitplatform.framework.Image;
 import com.github.jpmoresmau.rabbitplatform.game.RAssets;
 
@@ -53,9 +51,9 @@ public class Player {
     private void gravity(float deltaTime,int maxY){
         if (y<maxY){
             vy += deltaTime/rate;
-            if (vy<0.1 && vy>-0.1){
+            /*if (vy<0.1 && vy>-0.1){
                 Log.d("Player","vy"+vy+",y:"+y+",rate:"+rate);
-            }
+            }*/
         } else {
             if (vy>0){
                 stopJump();
@@ -68,7 +66,7 @@ public class Player {
         jump=true;
         rate= highRate;
         jumpStart=System.currentTimeMillis();
-        Log.d("Player","addJump");
+    //    Log.d("Player","addJump");
     };
 
     public void stopJump(){
@@ -79,12 +77,12 @@ public class Player {
             rate=middleRate;
         }
         jumpStart=0;
-        Log.d("Player","stopJump:"+diff+"->rate:"+rate);
+       // Log.d("Player","stopJump:"+diff+"->rate:"+rate);
     }
 
     private void jump(){
         if (vy==0 && jump){
-            Log.d("Player","jump");
+         //   Log.d("Player","jump");
             vy=jumpVelocity;
             jump=false;
         }
