@@ -22,12 +22,7 @@ public class Ground {
     private int maxY;
 
     private float rate=1;
-    private int lastInc=0;
 
-    private float counter=0;
-
-    private float inc=500;
-    private double increase=1.2;
 
     public Ground(int maxX,int maxY){
         this.maxX=maxX;
@@ -42,14 +37,9 @@ public class Ground {
 
 
 
-    public void update(float deltaTime){
-        //Log.d("Ground","deltaTime:"+deltaTime);
-        counter+=deltaTime;
-        if (counter>inc){
-            counter-=inc;
-            rate *= increase;
-            Log.d("Ground","Increase:"+rate);
-        }
+    public void update(float deltaTime,double increase){
+        rate *= increase;
+       // Log.d("Ground","Increase:"+rate);
         int dx=(int)Math.round(deltaTime*rate);
         for (Iterator<GroundComponent> it=components.iterator();it.hasNext();){
             GroundComponent gc=it.next();

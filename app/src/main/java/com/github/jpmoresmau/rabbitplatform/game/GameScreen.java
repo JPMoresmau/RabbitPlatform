@@ -15,6 +15,7 @@ import com.github.jpmoresmau.rabbitplatform.game.model.Ground;
 import com.github.jpmoresmau.rabbitplatform.game.model.GroundComponent;
 import com.github.jpmoresmau.rabbitplatform.game.model.Player;
 import com.github.jpmoresmau.rabbitplatform.game.model.Score;
+import com.github.jpmoresmau.rabbitplatform.game.model.Speed;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import java.util.List;
  */
 public class GameScreen extends Screen {
     private Player player;
+    private Speed speed;
     private Ground ground;
     private Score score;
 
@@ -48,6 +50,7 @@ public class GameScreen extends Screen {
     }
 
     private void init(){
+        speed=new Speed();
         Graphics g = getGame().getGraphics();
         ground=new Ground(g.getWidth(),maxY);
         int x=minX+RAssets.ground_grass.getWidth()/2;
@@ -78,14 +81,15 @@ public class GameScreen extends Screen {
         }
         if (!paused) {
             score.update(deltaTime);
-            ground.update(deltaTime);
+            double inc=speed.update(deltaTime);
+            ground.update(deltaTime,inc);
             //int maxY=ground.getRealMaxY(player.getX());
             int maxY1=ground.getRealMaxY(player.getX()-player.getFeetWidth());
             int maxY2=ground.getRealMaxY(player.getX()+player.getFeetWidth());
             int realMax=Math.min(maxY1,maxY2);
             //Log.d("GameScreen","maxY1:"+maxY1);
             //Log.d("GameScreen","maxY2:"+maxY2);
-            player.update(deltaTime, realMax);
+            player.update(deltaTime, realMax,inc);
             if (!player.isJumping() && (player.getY()>realMax || player.getY()>this.maxY || player.getY()>=getGame().getGraphics().getHeight())){
 //                Log.d("GameScreen","over:player.getY():"+player.getY());
 //                Log.d("GameScreen","over:player.getY()>this.maxY:"+(player.getY()>this.maxY));
@@ -99,7 +103,7 @@ public class GameScreen extends Screen {
             }
         } else if (player.isDead()){
             int maxY=ground.getRealMaxY(player.getX());
-            player.update(deltaTime, maxY);
+            player.update(deltaTime, maxY,1);
         }
     }
 

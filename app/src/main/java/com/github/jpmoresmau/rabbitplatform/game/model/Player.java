@@ -30,6 +30,12 @@ public class Player {
 
     private boolean dead=false;
 
+    private int idx=0;
+    private float counter;
+    private float counterRate=30;
+
+    private Image[] walksImages=new Image[]{RAssets.bunny1_walk1,RAssets.bunny1_walk2};
+
     public Player(int x,int y){
         this.x=x;
         this.y=y;
@@ -91,7 +97,16 @@ public class Player {
 
     }
 
-    public void update(float deltaTime,int maxY){
+    public void update(float deltaTime,int maxY,double increase){
+        counter+=deltaTime;
+        counterRate/=increase;
+        if (counter>=counterRate){
+            idx++;
+            if (idx>=walksImages.length){
+                idx=0;
+            }
+            counter=0;
+        }
         gravity(deltaTime, maxY);
         jump();
         physics(deltaTime,maxY);
@@ -107,7 +122,7 @@ public class Player {
         } else if (y<maxY){
             return RAssets.bunny1_jump;
         } else {
-            return RAssets.bunny1_ready;
+            return walksImages[idx];
         }
     }
 
