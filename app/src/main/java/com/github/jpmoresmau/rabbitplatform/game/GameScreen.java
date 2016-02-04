@@ -2,6 +2,7 @@ package com.github.jpmoresmau.rabbitplatform.game;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import com.github.jpmoresmau.rabbitplatform.framework.Game;
 import com.github.jpmoresmau.rabbitplatform.framework.Graphics;
@@ -30,7 +31,6 @@ public class GameScreen extends Screen {
 
     private boolean paused=false;
 
-    private boolean over=false;
 
     private Paint p=new Paint();
 
@@ -65,8 +65,7 @@ public class GameScreen extends Screen {
             if (isControlEvent(event)){
                 if (event.getType().equals(TouchEventType.TOUCH_DOWN)){
                     paused=!paused;
-                    if (over){
-                        over=false;
+                    if (player.isDead()){
                         init();
                         return;
                     }
@@ -80,13 +79,27 @@ public class GameScreen extends Screen {
         if (!paused) {
             score.update(deltaTime);
             ground.update(deltaTime);
-            int maxY=ground.getRealMaxY(player.getX());
-            player.update(deltaTime, maxY);
-            if (!player.isJumping() && (player.getY()>maxY || player.getY()>=getGame().getGraphics().getHeight())){
+            //int maxY=ground.getRealMaxY(player.getX());
+            int maxY1=ground.getRealMaxY(player.getX()-player.getFeetWidth());
+            int maxY2=ground.getRealMaxY(player.getX()+player.getFeetWidth());
+            int realMax=Math.min(maxY1,maxY2);
+            //Log.d("GameScreen","maxY1:"+maxY1);
+            //Log.d("GameScreen","maxY2:"+maxY2);
+            player.update(deltaTime, realMax);
+            if (!player.isJumping() && (player.getY()>realMax || player.getY()>this.maxY || player.getY()>=getGame().getGraphics().getHeight())){
+//                Log.d("GameScreen","over:player.getY():"+player.getY());
+//                Log.d("GameScreen","over:player.getY()>this.maxY:"+(player.getY()>this.maxY));
+//                Log.d("GameScreen","over:this.maxY:"+this.maxY);
+//                Log.d("GameScreen","over:player.getY()>realMax:"+(player.getY()>realMax));
+//                Log.d("GameScreen","over:this.maxY:"+realMax);
+//                Log.d("GameScreen","over:player.getY()>=getGame().getGraphics().getHeight():"+(player.getY()>=getGame().getGraphics().getHeight()));
                 // game over!!
-                over=true;
+                player.die();
                 paused=true;
             }
+        } else if (player.isDead()){
+            int maxY=ground.getRealMaxY(player.getX());
+            player.update(deltaTime, maxY);
         }
     }
 
@@ -116,7 +129,7 @@ public class GameScreen extends Screen {
         Image img=player.getImage(maxY);
         g.drawImage(img, player.getX()-img.getWidth()/2, player.getY()-img.getHeight());
 
-        if (over){
+        if (player.isDead()){
             GraphicsUtils.drawCenter(g,RAssets.gameover);
         } else if (paused){
             GraphicsUtils.drawCenter(g,RAssets.paused);

@@ -26,6 +26,10 @@ public class Player {
     private float middleRate=15;
     private float jumpVelocity=-5.0f;
 
+    private int feetWidth=20;
+
+    private boolean dead=false;
+
     public Player(int x,int y){
         this.x=x;
         this.y=y;
@@ -98,7 +102,9 @@ public class Player {
     }
 
     public Image getImage(int maxY){
-         if (y<maxY){
+        if (dead){
+            return RAssets.bunny1_hurt;
+        } else if (y<maxY){
             return RAssets.bunny1_jump;
         } else {
             return RAssets.bunny1_ready;
@@ -107,5 +113,18 @@ public class Player {
 
     public boolean isJumping(){
         return vy<0;
+    }
+
+    public int getFeetWidth() {
+        return feetWidth;
+    }
+
+    public void die(){
+        rate=lowRate;
+        dead=true;
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 }

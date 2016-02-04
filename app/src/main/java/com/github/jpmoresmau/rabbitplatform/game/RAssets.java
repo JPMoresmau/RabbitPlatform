@@ -12,6 +12,7 @@ public class RAssets {
     public static Image bunny1_ready;
     public static Image bunny1_jump;
     public static Image bunny1_stand;
+    public static Image bunny1_hurt;
     public static Image ground_grass;
     public static Image ground_grass_small;
 
