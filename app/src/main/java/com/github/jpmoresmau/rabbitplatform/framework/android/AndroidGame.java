@@ -115,4 +115,9 @@ public abstract class AndroidGame extends Activity implements Game {
     public Screen getCurrentScreen() {
    return screen;
     }
+
+    @Override
+    public String getResourceString(int id){
+        return getResources().getString(id);
+    }
 }

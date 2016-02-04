@@ -18,5 +18,7 @@ public interface Game {
 
     Screen getCurrentScreen();
 
-     Screen getInitScreen();
+    Screen getInitScreen();
+
+    String getResourceString(int id);
 }

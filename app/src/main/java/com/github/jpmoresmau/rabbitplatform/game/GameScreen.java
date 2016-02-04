@@ -2,8 +2,8 @@ package com.github.jpmoresmau.rabbitplatform.game;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
+import com.github.jpmoresmau.rabbitplatform.R;
 import com.github.jpmoresmau.rabbitplatform.framework.Game;
 import com.github.jpmoresmau.rabbitplatform.framework.Graphics;
 import com.github.jpmoresmau.rabbitplatform.framework.GraphicsUtils;
@@ -32,9 +32,7 @@ public class GameScreen extends Screen {
     private int maxY=0;
 
     private boolean paused=false;
-
-
-    private Paint p=new Paint();
+    private boolean scored=false;
 
 
     public GameScreen(Game game) {
@@ -44,12 +42,10 @@ public class GameScreen extends Screen {
         maxY=g.getHeight()-RAssets.ground_grass.getHeight();
         init();
 
-        p.setColor(Color.WHITE);
-        p.setTypeface(RAssets.block_font);
-        p.setTextSize(40);
     }
 
     private void init(){
+        scored=false;
         speed=new Speed();
         Graphics g = getGame().getGraphics();
         ground=new Ground(g.getWidth(),maxY);
@@ -65,16 +61,20 @@ public class GameScreen extends Screen {
 
         List<TouchEvent> touchEvents = getGame().getInput().getTouchEvents();
         for (TouchEvent event : touchEvents) {
-            if (isControlEvent(event)){
-                if (event.getType().equals(TouchEventType.TOUCH_DOWN)){
-                    paused=!paused;
-                    if (player.isDead()){
+            if (event.getType().equals(TouchEventType.TOUCH_DOWN)) {
+                if (isControlEvent(event)) {
+                    paused = !paused;
+                    scored = false;
+                    if (player.isDead()) {
                         init();
                         return;
                     }
+                } else if (isScoreEvent(event)){
+                    paused = true;
+                    scored = true;
+                } else {
+                    player.addJump();
                 }
-            } else if (!paused && event.getType().equals(TouchEventType.TOUCH_DOWN)) {
-                player.addJump();
             } else if (!paused && event.getType().equals(TouchEventType.TOUCH_UP)) {
                 player.stopJump();
             }
@@ -89,7 +89,7 @@ public class GameScreen extends Screen {
             int realMax=Math.min(maxY1,maxY2);
             //Log.d("GameScreen","maxY1:"+maxY1);
             //Log.d("GameScreen","maxY2:"+maxY2);
-            player.update(deltaTime, realMax,inc);
+            player.update(deltaTime, realMax, inc);
             if (!player.isJumping() && (player.getY()>realMax || player.getY()>this.maxY || player.getY()>=getGame().getGraphics().getHeight())){
 //                Log.d("GameScreen","over:player.getY():"+player.getY());
 //                Log.d("GameScreen","over:player.getY()>this.maxY:"+(player.getY()>this.maxY));
@@ -103,13 +103,19 @@ public class GameScreen extends Screen {
             }
         } else if (player.isDead()){
             int maxY=ground.getRealMaxY(player.getX());
-            player.update(deltaTime, maxY,1);
+            player.update(deltaTime, maxY, 1);
         }
     }
 
     private boolean isControlEvent(TouchEvent event){
         return event.getX()>=5 && event.getX()<=5+RAssets.forward.getWidth()
                 && event.getY()>=5 && event.getY()<=5+RAssets.forward.getHeight();
+    }
+
+    private boolean isScoreEvent(TouchEvent event){
+        Graphics g = getGame().getGraphics();
+        return event.getX()>=g.getWidth()-150
+                && event.getY()<=40;
     }
 
     @Override
@@ -121,7 +127,7 @@ public class GameScreen extends Screen {
         Image ctrl=paused?RAssets.forward:RAssets.pause;
         g.drawImage(ctrl,5,5);
 
-        g.drawString(score.getFormattedScore(),g.getWidth()-150,40,p);
+        g.drawString(score.getFormattedScore(),g.getWidth()-150,40, RAssets.scorePaint);
 
 
         for (GroundComponent gc:ground.getComponents()){
@@ -134,11 +140,18 @@ public class GameScreen extends Screen {
         g.drawImage(img, player.getX()-img.getWidth()/2, player.getY()-img.getHeight());
 
         if (player.isDead()){
-            GraphicsUtils.drawCenter(g,RAssets.gameover);
+            //GraphicsUtils.drawCenter(g,RAssets.gameover);
+            GraphicsUtils.drawCenter(g, getGame().getResourceString(R.string.game_over),RAssets.messagePaint);
         } else if (paused){
-            GraphicsUtils.drawCenter(g,RAssets.paused);
+            //GraphicsUtils.drawCenter(g,RAssets.paused);
+            GraphicsUtils.drawCenter(g,getGame().getResourceString(R.string.paused),RAssets.messagePaint);
         }
-
+        if (scored){
+            int x=5+RAssets.forward.getWidth();
+            g.drawString(getGame().getResourceString(R.string.written),x, 100,RAssets.aboutPaint);
+            g.drawString(getGame().getResourceString(R.string.framework),x, 150,RAssets.aboutPaint);
+            g.drawString(getGame().getResourceString(R.string.art),x, 200,RAssets.aboutPaint);
+        }
     }
 
 

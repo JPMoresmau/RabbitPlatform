@@ -41,6 +41,7 @@ public class LoadingScreen extends Screen {
         }
 
         RAssets.block_font= g.loadTypeface("fonts/kenpixel_blocks.ttf");
+        RAssets.initPaints();
 
         getGame().setScreen(new GameScreen(getGame()));
 
