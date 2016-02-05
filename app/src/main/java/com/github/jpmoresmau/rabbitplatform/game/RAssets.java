@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 import com.github.jpmoresmau.rabbitplatform.framework.Image;
+import com.github.jpmoresmau.rabbitplatform.framework.Sound;
 
 /**
  * Created by jpmoresmau on 2/1/16.
@@ -22,8 +23,8 @@ public class RAssets {
 
     public static Image forward;
     public static Image pause;
-    public static Image paused;
-    public static Image gameover;
+    //public static Image paused;
+    //public static Image gameover;
 
     public static Image carrot;
     public static Image carrot_gold;
@@ -34,6 +35,9 @@ public class RAssets {
 
     public static Typeface block_font;
 
+    public static Sound game_over;
+    public static Sound item;
+    public static Sound jump;
 
     public static Paint scorePaint =new Paint();
     public static Paint aboutPaint =new Paint();

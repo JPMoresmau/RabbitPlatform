@@ -8,6 +8,7 @@ import com.github.jpmoresmau.rabbitplatform.framework.GraphicsUtils;
 import com.github.jpmoresmau.rabbitplatform.framework.Image;
 import com.github.jpmoresmau.rabbitplatform.framework.ImageFormat;
 import com.github.jpmoresmau.rabbitplatform.framework.Screen;
+import com.github.jpmoresmau.rabbitplatform.framework.Sound;
 import com.github.jpmoresmau.rabbitplatform.framework.android.AndroidGraphics;
 
 import java.lang.reflect.Field;
@@ -31,9 +32,11 @@ public class LoadingScreen extends Screen {
         try {
 
             for (Field f:RAssets.class.getDeclaredFields()){
+                String name=f.getName();
                 if (f.getType().equals(Image.class)){
-                    String name=f.getName();
                     f.set(null,g.newImage(name+".png",ImageFormat.RGB565));
+                } else if (f.getType().equals(Sound.class)){
+                    f.set(null,getGame().getAudio().createSound(name+".ogg"));
                 }
             }
         } catch (Exception e){

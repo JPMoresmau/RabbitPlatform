@@ -78,6 +78,7 @@ public class GameScreen extends Screen {
                     scored = true;
                 } else {
                     player.addJump();
+                    RAssets.jump.play(0.2f);
                 }
             } else if (!paused && event.getType().equals(TouchEventType.TOUCH_UP)) {
                 player.stopJump();
@@ -95,9 +96,7 @@ public class GameScreen extends Screen {
             //Log.d("GameScreen","maxY2:"+maxY2);
             if (player.getY()>maxY2){
                 // forgot to jump
-                player.die();
-                highscored=score.gameOver();
-                paused=true;
+                gameOver();
             } else {
                 player.update(deltaTime, realMax, inc);
                 if (!player.isJumping() && (player.getY() > maxY1 || player.getY() > maxY2 || player.getY() > this.maxY || player.getY() >= getGame().getGraphics().getHeight())) {
@@ -108,15 +107,20 @@ public class GameScreen extends Screen {
 //                Log.d("GameScreen","over:this.maxY:"+realMax);
 //                Log.d("GameScreen","over:player.getY()>=getGame().getGraphics().getHeight():"+(player.getY()>=getGame().getGraphics().getHeight()));
                     // game over!!
-                    player.die();
-                    highscored = score.gameOver();
-                    paused = true;
+                    gameOver();
                 }
             }
         } else if (player.isDead()){
             int maxY=ground.getRealMaxY(player.getX());
             player.update(deltaTime, maxY, 1);
         }
+    }
+
+    private void gameOver(){
+        RAssets.game_over.play(1);
+        player.die();
+        highscored = score.gameOver();
+        paused = true;
     }
 
     private boolean isControlEvent(TouchEvent event){
@@ -156,6 +160,7 @@ public class GameScreen extends Screen {
                 int y=maxY - gc.getY() - gc.getItem().getY();
                 if (GraphicsUtils.intersects(img,px,py,gc.getItem().getImage(),x,y)){
                     score.inc(gc.getItem().getScore());
+                    RAssets.item.play(0.5f);
                     gc.setItem(null);
                 } else {
                     g.drawImage(gc.getItem().getImage(), x, y);
