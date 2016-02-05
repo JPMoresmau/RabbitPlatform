@@ -23,6 +23,7 @@ public class Ground {
 
     private float rate=1;
 
+    private int step=100;
 
     public Ground(int maxX,int maxY){
         this.maxX=maxX;
@@ -71,7 +72,7 @@ public class Ground {
     }
 
     private GroundComponent getNextComponent(){
-        int i=r.nextInt();
+        int i=r.nextInt(3);
         GroundComponent last=components.getLast();
         int x=last.getX()+last.getWidth();
         if (last instanceof SolidComponent){
@@ -79,15 +80,36 @@ public class Ground {
                 return new GroundComponent(x,-1000,150);
             } else {
                 i=r.nextInt();
-                return generateSolidComponent(i, x);
+                return generateSolidComponent(i, x,last.getY());
             }
         } else {
-            return generateSolidComponent(i,x);
+            return generateSolidComponent(i,x,last.getY());
         }
     }
 
-    private SolidComponent generateSolidComponent(int i,int x){
+    private SolidComponent generateSolidComponent(int i,int x,int lastY){
         Image img=i%3==0?RAssets.ground_grass_small:RAssets.ground_grass;
-        return new SolidComponent(x,0,img);
+        if (lastY<0){
+            lastY=0;
+        }
+        int max=lastY==0?3:
+                lastY==step?
+                        4:5;
+        if (lastY>step*4){
+            lastY=step*3;
+        }
+        int j=r.nextInt(max);
+        int y=lastY;
+        switch (j){
+            case 0 : y=lastY+(step*2); break;
+            case 1 : y=lastY+step; break;
+            case 2 : y=lastY; break;
+            case 3 : y=lastY-step; break;
+            case 4 : y=lastY-(step*2); break;
+        }
+        Log.d("Ground","lastY:"+lastY);
+        Log.d("Ground","y:"+y);
+
+        return new SolidComponent(x,y,img);
     }
 }
