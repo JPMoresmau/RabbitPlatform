@@ -28,4 +28,16 @@ public class GraphicsUtils {
         r.offsetTo(x+offsetx, y+offsety);
         return r;
     }
+
+    public static boolean intersects(Image img1,int x1,int y1,Image img2, int x2,int y2){
+        Rect rect1=new Rect();
+        rect1.set(x1,y1,x1+img1.getWidth(),y1+img1.getWidth());
+        Rect rect2=new Rect();
+        rect2.set(x2, y2, x2 + img2.getWidth(), y2 + img2.getWidth());
+        Rect rect3=new Rect();
+        if (rect3.setIntersect(rect1,rect2)){
+            return rect3.width()>img2.getWidth()/2 && rect3.height()>img2.getHeight()/2;
+        }
+        return false;
+    }
 }

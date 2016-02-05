@@ -66,8 +66,24 @@ public class Ground {
         int x=last.getX()+last.getWidth();
         while (x<maxX){
             last = getNextComponent();
+            addItem(last);
             components.add(last);
             x=last.getX()+last.getWidth();
+        }
+    }
+
+    private void addItem(GroundComponent gc){
+        int i=r.nextInt(20);
+        if (i<5) {
+            int w = gc.getWidth();
+            Image img = RAssets.carrot;
+            int rnd = r.nextInt(w - img.getWidth());
+            gc.setItem(new Item(rnd, 250, img,5));
+        } else if (i==19){
+            int w = gc.getWidth();
+            Image img = RAssets.carrot_gold;
+            int rnd = r.nextInt(w - img.getWidth());
+            gc.setItem(new Item(rnd, 250, img,20));
         }
     }
 
@@ -107,8 +123,8 @@ public class Ground {
             case 3 : y=lastY-step; break;
             case 4 : y=lastY-(step*2); break;
         }
-        Log.d("Ground","lastY:"+lastY);
-        Log.d("Ground","y:"+y);
+        //Log.d("Ground","lastY:"+lastY);
+        //Log.d("Ground","y:"+y);
 
         return new SolidComponent(x,y,img);
     }

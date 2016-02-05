@@ -25,6 +25,9 @@ public class RAssets {
     public static Image paused;
     public static Image gameover;
 
+    public static Image carrot;
+    public static Image carrot_gold;
+
     public static int GREEN = 0x2C774C;
     public static int SKY = 0xade6ff;
     public static int ORANGE = 0xe86a1700;

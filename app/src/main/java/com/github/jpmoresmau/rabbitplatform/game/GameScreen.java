@@ -137,19 +137,33 @@ public class GameScreen extends Screen {
         g.clearScreen(RAssets.SKY);
 
         Image ctrl=paused?RAssets.forward:RAssets.pause;
-        g.drawImage(ctrl,5,5);
+        g.drawImage(ctrl, 5, 5);
 
         g.drawString(score.getFormattedScore(),g.getWidth()-150,40, RAssets.scorePaint);
+
+        int maxY1=ground.getRealMaxY(player.getX());
+        Image img=player.getImage(maxY1);
+        int px=player.getX()-img.getWidth()/2;
+        int py=player.getY()-img.getHeight();
 
 
         for (GroundComponent gc:ground.getComponents()){
             if (gc.getImage()!=null) {
                 g.drawImage(gc.getImage(), minX + gc.getX(), maxY - gc.getY());
             }
+            if (gc.getItem()!=null){
+                int x=minX + gc.getX() + gc.getItem().getX();
+                int y=maxY - gc.getY() - gc.getItem().getY();
+                if (GraphicsUtils.intersects(img,px,py,gc.getItem().getImage(),x,y)){
+                    score.inc(gc.getItem().getScore());
+                    gc.setItem(null);
+                } else {
+                    g.drawImage(gc.getItem().getImage(), x, y);
+                }
+            }
         }
-        int maxY1=ground.getRealMaxY(player.getX());
-        Image img=player.getImage(maxY1);
-        g.drawImage(img, player.getX()-img.getWidth()/2, player.getY()-img.getHeight());
+
+        g.drawImage(img, px, py);
 
         if (player.isDead()){
             Rect r=GraphicsUtils.drawCenter(g, getGame().getResourceString(R.string.game_over),RAssets.messagePaint);

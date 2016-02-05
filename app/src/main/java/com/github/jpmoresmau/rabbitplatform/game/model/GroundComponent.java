@@ -10,6 +10,8 @@ public class GroundComponent {
     private int y;
     private int width;
 
+    private Item item;
+
     public GroundComponent(int x, int y, int width) {
         this.x = x;
         this.y = y;
@@ -38,5 +40,13 @@ public class GroundComponent {
 
     public int getWidth() {
         return width;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 }

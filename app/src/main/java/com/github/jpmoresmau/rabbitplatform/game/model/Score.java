@@ -34,6 +34,10 @@ public class Score {
         }
     }
 
+    public void inc(int inc){
+        score+=inc;
+    }
+
     public int getScore() {
         return score;
     }
